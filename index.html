@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Site | Do Zero!</title>
+    <link rel="stylesheet" href="estilo.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
+</head>
+<body>
+    <!-- Cabeçalho -->
+    <header>
+        <nav class="navegacao">
+            <a href="#" class="logo">MeuSite</a>
+            <ul class="menu">
+                <li><a href="#inicio">Início</a></li>
+                <li><a href="#sobre">Sobre</a></li>
+                <li><a href="#projetos">Projetos</a></li>
+                <li><a href="#contato">Contato</a></li>
+            </ul>
+            <button class="botao-menu" id="botaoMenu">☰</button>
+        </nav>
+    </header>
+
+    <!-- Página Principal -->
+    <section id="inicio" class="secao inicio">
+        <div class="conteudo-inicio">
+            <h1>Olá, eu sou <span class="destaque">Você!</span></h1>
+            <p>Criei este site do zero, sem plataformas — é todo meu 💻</p>
+            <a href="#projetos" class="botao">Ver Meus Projetos</a>
+        </div>
+    </section>
+
+    <!-- Sobre -->
+    <section id="sobre" class="secao">
+        <h2>Sobre Mim</h2>
+        <div class="grade-sobre">
+            <p>Sou alguém que decidiu aprender a criar sites de verdade, escrevendo meu próprio código. Nada de arrastar e soltar — construí tudo com minhas próprias mãos!</p>
+            <p>Estou começando minha jornada no mundo da programação e este é meu primeiro passo.</p>
+        </div>
+    </section>
+
+    <!-- Projetos -->
+    <section id="projetos" class="secao fundo-claro">
+        <h2>Meus Projetos</h2>
+        <div class="grade-projetos">
+            <div class="cartao">
+                <h3>🌐 Meu Primeiro Site</h3>
+                <p>Este site que você está vendo! Feito com HTML e CSS puro.</p>
+            </div>
+            <div class="cartao">
+                <h3>🚀 Em Breve</h3>
+                <p>Mais projetos vão aparecer aqui conforme eu for aprendendo!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contato -->
+    <section id="contato" class="secao">
+        <h2>Contato</h2>
+        <form class="formulario-contato" id="formContato">
+            <label for="nome">Seu Nome</label>
+            <input type="text" id="nome" required>
+            
+            <label for="mensagem">Mensagem</label>
+            <textarea id="mensagem" rows="4" required></textarea>
+            
+            <button type="submit" class="botao">Enviar Mensagem</button>
+        </form>
+        <p id="mensagemSucesso" class="sucesso oculto">✅ Mensagem enviada!</p>
+    </section>
+
+    <!-- Rodapé -->
+    <footer>
+        <p>&copy; 2026 Meu Site — Feito do zero com 💜</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
