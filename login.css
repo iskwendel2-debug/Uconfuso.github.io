@@ -1,0 +1,99 @@
+/* PÁGINA DE LOGIN */
+.pagina-login {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.caixa-login {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+}
+
+.caixa-login h1 {
+    color: #1f2937;
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+}
+
+.abas {
+    display: flex;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.aba {
+    flex: 1;
+    padding: 0.8rem;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #6b7280;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+}
+
+.aba.ativa {
+    color: #2563eb;
+    border-bottom-color: #2563eb;
+    font-weight: 600;
+}
+
+.form-login input {
+    width: 100%;
+    padding: 0.9rem;
+    margin-bottom: 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.form-login input:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+.form-login .botao {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.form-login .botao.destaque {
+    background: #f97316;
+}
+
+.form-login .botao.destaque:hover {
+    background: #ea580c;
+}
+
+.aviso {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: #9ca3af;
+}
+
+.erro {
+    color: #dc2626;
+    margin-top: 1rem;
+    font-weight: 500;
+}
+
+.voltar {
+    display: inline-block;
+    margin-top: 1.5rem;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.voltar:hover {
+    color: #2563eb;
+}

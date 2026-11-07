@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área Administrativa</title>
+    <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+    <header>
+        <nav class="navegacao">
+            <a href="#" class="logo">Painel Admin</a>
+            <button id="botaoSair" class="botao">Sair</button>
+        </nav>
+    </header>
+
+    <main class="secao" style="padding-top: 8rem;">
+        <h1>Painel de Controle 🔐</h1>
+        <p>Bem-vindo, Administrador!</p>
+        <p>Aqui você gerencia o site, usuários e configurações.</p>
+    </main>
+
+    <script>
+        if (localStorage.getItem('tipoUsuario') !== 'admin') {
+            window.location.href = 'login.html';
+        }
+        document.getElementById('botaoSair').addEventListener('click', () => {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>

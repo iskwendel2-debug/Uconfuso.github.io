@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Meu Site</title>
+    <link rel="stylesheet" href="estilo.css">
+    <link rel="stylesheet" href="login.css">
+</head>
+<body class="pagina-login">
+    <div class="caixa-login">
+        <h1>Acesse sua Conta</h1>
+        
+        <div class="abas">
+            <button class="aba ativa" id="abaCliente">Cliente</button>
+            <button class="aba" id="abaAdmin">Administrador</button>
+        </div>
+
+        <!-- Login Cliente -->
+        <form id="formCliente" class="form-login">
+            <h2>Área do Cliente</h2>
+            <input type="email" id="emailCliente" placeholder="Seu e-mail" required>
+            <input type="password" id="senhaCliente" placeholder="Sua senha" required>
+            <button type="submit" class="botao">Entrar como Cliente</button>
+            <p class="aviso">Teste: cliente@email.com | senha123</p>
+        </form>
+
+        <!-- Login Admin -->
+        <form id="formAdmin" class="form-login oculto">
+            <h2>Área Administrativa</h2>
+            <input type="email" id="emailAdmin" placeholder="E-mail do Admin" required>
+            <input type="password" id="senhaAdmin" placeholder="Senha" required>
+            <button type="submit" class="botao destaque">Entrar como Admin</button>
+            <p class="aviso">Teste: admin@meusite.com | admin123</p>
+        </form>
+
+        <p id="mensagemErro" class="erro oculto">E-mail ou senha incorretos!</p>
+        <a href="index.html" class="voltar">← Voltar ao site</a>
+    </div>
+
+    <script src="login.js"></script>
+</body>
+</html>
