@@ -59,6 +59,17 @@
                 alert("Erro: " + e.message);
             }
         }
+        async function apagarAviso() {
+    if (confirm('Tem certeza que quer apagar o aviso?')) {
+        try {
+            await firebase.firestore().collection('config').doc('aviso').delete();
+            document.getElementById('textoAviso').value = '';
+            alert('✅ Aviso removido!');
+        } catch(e) {
+            alert('Erro: ' + e.message);
+        }
+    }
+}
 
         function sair() {
             firebase.auth().signOut().then(() => {
@@ -82,6 +93,7 @@
         <textarea id="textoAviso" placeholder="Seu aviso aqui..." style="width:100%; min-height:120px; padding:0.8rem; margin:0.5rem 0;"></textarea>
         <br>
         <button onclick="salvarAviso()" class="botao">💾 Salvar</button>
+        <button onclick="apagarAviso()" class="botao" style="background:#ff4444;">🗑️ Apagar Aviso</button>
     </main>
 </body>
 </html>
