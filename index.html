@@ -42,11 +42,22 @@ firebase.firestore().collection('config').doc('aviso').onSnapshot((doc) => {
 
     <!-- Página Principal -->
     <section id="inicio" class="secao inicio">
-        <div class="conteudo-inicio">
-            <h1>Olá, eu sou <span class="destaque">Você!</span></h1>
-            <p>Criei este site do zero, sem plataformas — é todo meu 💻</p>
-            <a href="#projetos" class="botao">Ver Meus Projetos</a>
-        </div>
+           <div class="conteudo-inicio">
+    <h1 id="tituloSite">Carregando...</h1>
+    <p id="sloganSite"></p>
+    <p id="descricaoSite"></p>
+    <a href="#projetos" class="botao">Ver Meus Projetos</a>
+</div>
+<script>
+firebase.firestore().collection('config').doc('textosSite').onSnapshot((doc) => {
+    if (doc.exists) {
+        const dados = doc.data();
+        if (dados.tituloInicio) document.getElementById('tituloSite').textContent = dados.tituloInicio;
+        if (dados.slogan) document.getElementById('sloganSite').textContent = dados.slogan;
+        if (dados.descricaoInicio) document.getElementById('descricaoSite').textContent = dados.descricaoInicio;
+    }
+});
+</script>
     </section>
 
     <!-- Sobre -->
@@ -90,7 +101,7 @@ firebase.firestore().collection('config').doc('aviso').onSnapshot((doc) => {
 
     <!-- Rodapé -->
     <footer>
-        <p>&copy; 2026 Meu Site — Feito do zero com 💜</p>
+        <p>&copy; 2026 Meu Site — Manaus Am </p>
     </footer>
 
     <script src="script.js"></script>

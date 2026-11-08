@@ -43,6 +43,20 @@
         .conteudo-aba.mostrar {
             display: block;
         }
+        .grupo-campo {
+            margin-bottom: 1rem;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -67,6 +81,7 @@
             document.getElementById('nomeAdmin').textContent = usuario.displayName || usuario.email;
 
             carregarAviso();
+            carregarTextosSite();
             await carregarUsuarios();
         });
 
@@ -78,6 +93,7 @@
             document.getElementById(nomeAba).classList.add('mostrar');
         }
 
+        // ===== AVISOS =====
         async function carregarAviso() {
             const snap = await firebase.firestore().collection('config').doc('aviso').get();
             if (snap.exists) {
@@ -107,6 +123,36 @@
             }
         }
 
+        // ===== EDITAR TEXTOS DO SITE =====
+        async function carregarTextosSite() {
+            const snap = await firebase.firestore().collection('config').doc('textosSite').get();
+            if (snap.exists) {
+                const dados = snap.data();
+                document.getElementById('tituloInicio').value = dados.tituloInicio || '';
+                document.getElementById('descricaoInicio').value = dados.descricaoInicio || '';
+                document.getElementById('slogan').value = dados.slogan || '';
+            }
+        }
+
+        async function salvarTextosSite() {
+            const titulo = document.getElementById('tituloInicio').value;
+            const descricao = document.getElementById('descricaoInicio').value;
+            const slogan = document.getElementById('slogan').value;
+
+            try {
+                await firebase.firestore().collection('config').doc('textosSite').set({
+                    tituloInicio: titulo,
+                    descricaoInicio: descricao,
+                    slogan: slogan,
+                    atualizadoEm: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                alert('✅ Textos do site atualizados!');
+            } catch(e) {
+                alert('❌ Erro: ' + e.message);
+            }
+        }
+
+        // ===== USUÁRIOS =====
         async function carregarUsuarios() {
             const lista = document.getElementById('listaUsuarios');
             lista.innerHTML = '<p>Carregando...</p>';
@@ -175,17 +221,44 @@
 
         <div>
             <span class="aba ativa" onclick="mudarAba('abaAvisos')">📢 Avisos</span>
+            <span class="aba" onclick="mudarAba('abaTextos')">✏️ Editar Site</span>
             <span class="aba" onclick="mudarAba('abaUsuarios')">👥 Usuários</span>
         </div>
 
+        <!-- ABA AVISOS -->
         <div id="abaAvisos" class="conteudo-aba mostrar">
-            <h2>✏️ Gerenciar Avisos</h2>
+            <h2>📢 Gerenciar Avisos</h2>
             <textarea id="textoAviso" placeholder="Digite o aviso..." style="width:100%; min-height:120px; padding:0.8rem; margin:0.5rem 0;"></textarea>
             <br>
             <button onclick="salvarAviso()" class="botao">💾 Salvar</button>
             <button onclick="apagarAviso()" class="botao" style="background:#ff4444;">🗑️ Apagar</button>
         </div>
 
+        <!-- ABA EDITAR TEXTOS -->
+        <div id="abaTextos" class="conteudo-aba">
+            <h2>✏️ Editar Textos do Site</h2>
+            <p>Altere os textos abaixo e clique em Salvar para atualizar a página inicial!</p>
+            <hr>
+
+            <div class="grupo-campo">
+                <label>Título Principal:</label>
+                <input type="text" id="tituloInicio" placeholder="Ex: Bem-vindo ao Meu Site!">
+            </div>
+
+            <div class="grupo-campo">
+                <label>Slogan / Frase abaixo do título:</label>
+                <input type="text" id="slogan" placeholder="Ex: O melhor lugar pra você!">
+            </div>
+
+            <div class="grupo-campo">
+                <label>Descrição / Apresentação:</label>
+                <textarea id="descricaoInicio" placeholder="Conte um pouco sobre o site..." style="min-height:100px;"></textarea>
+            </div>
+
+            <button onclick="salvarTextosSite()" class="botao">💾 Salvar Alterações</button>
+        </div>
+
+        <!-- ABA USUÁRIOS -->
         <div id="abaUsuarios" class="conteudo-aba">
             <h2>👥 Lista de Usuários</h2>
             <p>Total de contas criadas: <strong id="totalUsuarios">0</strong></p>
