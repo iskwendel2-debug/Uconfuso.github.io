@@ -12,10 +12,16 @@ formCad.addEventListener('submit', (e) => {
 
     firebase.auth().createUserWithEmailAndPassword(email, senha)
         .then(resp => resp.user.updateProfile({ displayName: nome }))
-        .then(() => {
-            sucessoCad.classList.remove('oculto');
-            setTimeout(() => window.location.href = 'area-cliente.html', 2000);
-        })
+        .then(async (resp) => {
+    const usuario = resp.user;
+    await firebase.firestore().collection('usuarios').doc(usuario.uid).set({
+        nome: usuario.displayName,
+        email: usuario.email,
+        dataCadastro: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    sucessoCad.classList.remove('oculto');
+    setTimeout(() => window.location.href = 'area-cliente.html', 2000);
+})
         .catch(erro => {
             erroCad.classList.remove('oculto');
             if (erro.code === 'auth/email-already-in-use') {
