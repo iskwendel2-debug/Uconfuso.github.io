@@ -8,3 +8,4 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+const adminEmail = "iskwendel2@gmail.com"; //
