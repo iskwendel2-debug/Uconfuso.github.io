@@ -5,6 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Administrativo</title>
     <link rel="stylesheet" href="estilo.css">
+    <style>
+        .tabela-usuarios {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        .tabela-usuarios th, .tabela-usuarios td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .tabela-usuarios th {
+            background: #f5f5f5;
+        }
+        .botao-excluir {
+            background: #ff4444;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+        }
+        .aba {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-right: 0.5rem;
+        }
+        .aba.ativa {
+            border-bottom: 3px solid #2196F3;
+            color: #2196F3;
+            font-weight: bold;
+        }
+        .conteudo-aba {
+            display: none;
+            padding: 1rem 0;
+        }
+        .conteudo-aba.mostrar {
+            display: block;
+        }
+    </style>
 </head>
 <body>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -14,62 +53,107 @@
 
     <script>
         firebase.auth().onAuthStateChanged(async (usuario) => {
-            console.log("Usuário logado:", usuario); // Ajuda a verificar
-            
             if (!usuario) {
-                alert("Você precisa fazer login!");
                 window.location.href = 'login.html';
                 return;
             }
-
-            console.log("Seu e-mail:", usuario.email);
-            console.log("E-mail de admin:", adminEmail);
-
             if (usuario.email !== adminEmail) {
-                alert("⛔ ACESSO NEGADO!\nSeu e-mail: " + usuario.email + "\nAdmin: " + adminEmail);
+                alert('⛔ Acesso negado!');
                 window.location.href = 'index.html';
                 return;
             }
 
-            // SE CHEGOU AQUI → É ADMIN! ✅
             document.getElementById('painelAdmin').style.display = 'block';
             document.getElementById('nomeAdmin').textContent = usuario.displayName || usuario.email;
 
-            const db = firebase.firestore();
-            
-            // Carregar aviso
-            try {
-                const aviso = await db.collection('config').doc('aviso').get();
-                if (aviso.exists) {
-                    document.getElementById('textoAviso').value = aviso.data().texto || '';
-                }
-            } catch(e) {
-                console.log("Sem aviso salvo");
-            }
+            carregarAviso();
+            await carregarUsuarios();
         });
+
+        function mudarAba(nomeAba) {
+            document.querySelectorAll('.aba').forEach(aba => aba.classList.remove('ativa'));
+            document.querySelectorAll('.conteudo-aba').forEach(c => c.classList.remove('mostrar'));
+            
+            event.target.classList.add('ativa');
+            document.getElementById(nomeAba).classList.add('mostrar');
+        }
+
+        async function carregarAviso() {
+            const snap = await firebase.firestore().collection('config').doc('aviso').get();
+            if (snap.exists) {
+                document.getElementById('textoAviso').value = snap.data().texto || '';
+            }
+        }
 
         async function salvarAviso() {
             const texto = document.getElementById('textoAviso').value;
             try {
-                await firebase.firestore().collection('config').doc('aviso').set({
-                    texto: texto
-                });
-                alert("✅ Salvo!");
+                await firebase.firestore().collection('config').doc('aviso').set({ texto: texto });
+                alert('✅ Aviso salvo!');
             } catch(e) {
-                alert("Erro: " + e.message);
+                alert('❌ Erro: ' + e.message);
             }
         }
+
         async function apagarAviso() {
-    if (confirm('Tem certeza que quer apagar o aviso?')) {
-        try {
-            await firebase.firestore().collection('config').doc('aviso').delete();
-            document.getElementById('textoAviso').value = '';
-            alert('✅ Aviso removido!');
-        } catch(e) {
-            alert('Erro: ' + e.message);
+            if (confirm('Tem certeza?')) {
+                try {
+                    await firebase.firestore().collection('config').doc('aviso').delete();
+                    document.getElementById('textoAviso').value = '';
+                    alert('✅ Aviso removido!');
+                } catch(e) {
+                    alert('❌ Erro: ' + e.message);
+                }
+            }
         }
-    }
-}
+
+        async function carregarUsuarios() {
+            const lista = document.getElementById('listaUsuarios');
+            lista.innerHTML = '<p>Carregando...</p>';
+
+            try {
+                const snap = await firebase.firestore().collection('usuarios').get();
+                lista.innerHTML = '';
+
+                if (snap.empty) {
+                    lista.innerHTML = '<p>Nenhum usuário cadastrado ainda.</p>';
+                    document.getElementById('totalUsuarios').textContent = '0';
+                    return;
+                }
+
+                snap.forEach(doc => {
+                    const u = doc.data();
+                    const data = u.dataCadastro ? new Date(u.dataCadastro.toDate()).toLocaleString('pt-BR') : '-';
+                    
+                    lista.innerHTML += `
+                        <tr>
+                            <td>${u.nome || 'Sem nome'}</td>
+                            <td>${u.email || '-'}</td>
+                            <td>${data}</td>
+                            <td>
+                                <button class="botao botao-excluir" onclick="excluirUsuario('${doc.id}')">Excluir</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                document.getElementById('totalUsuarios').textContent = snap.size;
+            } catch(e) {
+                lista.innerHTML = `<p style="color:red">Erro ao carregar: ${e.message}</p>`;
+            }
+        }
+
+        async function excluirUsuario(uid) {
+            if (!confirm('Tem certeza que quer EXCLUIR esse usuário?\nEsta ação não pode ser desfeita!')) return;
+            
+            try {
+                await firebase.firestore().collection('usuarios').doc(uid).delete();
+                alert('✅ Usuário excluído!');
+                await carregarUsuarios();
+            } catch(e) {
+                alert('❌ Erro: ' + e.message);
+            }
+        }
 
         function sair() {
             firebase.auth().signOut().then(() => {
@@ -85,15 +169,39 @@
         </nav>
     </header>
 
-    <main id="painelAdmin" class="secao" style="padding-top: 8rem; display: none;">
+    <main id="painelAdmin" class="secao" style="padding-top: 6rem; display: none;">
         <h1>Bem-vindo, <span id="nomeAdmin"></span>! 🔐</h1>
         <hr>
 
-        <h2>✏️ Escrever Aviso</h2>
-        <textarea id="textoAviso" placeholder="Seu aviso aqui..." style="width:100%; min-height:120px; padding:0.8rem; margin:0.5rem 0;"></textarea>
-        <br>
-        <button onclick="salvarAviso()" class="botao">💾 Salvar</button>
-        <button onclick="apagarAviso()" class="botao" style="background:#ff4444;">🗑️ Apagar Aviso</button>
+        <div>
+            <span class="aba ativa" onclick="mudarAba('abaAvisos')">📢 Avisos</span>
+            <span class="aba" onclick="mudarAba('abaUsuarios')">👥 Usuários</span>
+        </div>
+
+        <div id="abaAvisos" class="conteudo-aba mostrar">
+            <h2>✏️ Gerenciar Avisos</h2>
+            <textarea id="textoAviso" placeholder="Digite o aviso..." style="width:100%; min-height:120px; padding:0.8rem; margin:0.5rem 0;"></textarea>
+            <br>
+            <button onclick="salvarAviso()" class="botao">💾 Salvar</button>
+            <button onclick="apagarAviso()" class="botao" style="background:#ff4444;">🗑️ Apagar</button>
+        </div>
+
+        <div id="abaUsuarios" class="conteudo-aba">
+            <h2>👥 Lista de Usuários</h2>
+            <p>Total de contas criadas: <strong id="totalUsuarios">0</strong></p>
+            
+            <table class="tabela-usuarios">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Data de Cadastro</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="listaUsuarios"></tbody>
+            </table>
+        </div>
     </main>
 </body>
 </html>
